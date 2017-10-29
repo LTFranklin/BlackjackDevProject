@@ -1,0 +1,64 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace BlackjackDevProject
+{
+    class Deck
+    {
+        //List of all the cards
+        private List<Card> cards = new List<Card>();
+
+        //Custom contructor
+        public Deck()
+        {
+            //Calls the card constructor 52 times - once for each card
+            for (int i = 0; i < 4; ++i)
+            {
+                for (int j = 1; j < 14; j++)
+                {
+                    cards.Add(new Card(j, i));
+                }
+            }
+            //shuffles the deck
+            Shuffle();
+        }
+
+        //Returns the top card after removing it from the deck
+        public Card GetCard()
+        {
+            Card c = cards[0];
+            cards.Remove(cards[0]);
+            return c;
+        }
+
+        //returns the current
+        public List<Card> GetDeck()
+        {
+            return cards;
+        }
+
+        //used to shuffle the deck
+        public void Shuffle()
+        {
+            //create a random number generator and a value to keep track of the number of cards untouched
+            Random rng = new Random();
+            int i = cards.Count();
+            //while there is still cards to be switched
+            while (i > 1)
+            {
+                //decrement
+                --i;
+                //find a random position within the deck
+                int pos = rng.Next(i + 1);
+                //save the card inside it
+                Card store = cards[pos];
+                //swap the cards positions
+                cards[pos] = cards[i];
+                cards[i] = store;
+            }
+        }
+    }
+}
