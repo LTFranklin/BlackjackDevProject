@@ -28,6 +28,10 @@ namespace BlackjackDevProject
             {
                 return 10;
             }
+            if (value == 1)
+            {
+                return 11;
+            }
             return value;
         }
 

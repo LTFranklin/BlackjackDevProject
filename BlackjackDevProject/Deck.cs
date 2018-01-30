@@ -22,8 +22,16 @@ namespace BlackjackDevProject
                     cards.Add(new Card(j, i));
                 }
             }
+            List<Card> temp = cards;
+            cards = Shuffle(cards);
+            //i is the number of decks in play -> this number may be a var depending on later developments
+            for (int i = 0; i < 2; ++i)
+            {
+                temp = Shuffle(temp);
+                cards.AddRange(temp);
+            }
             //shuffles the deck
-            Shuffle();
+
         }
 
         //Returns the top card after removing it from the deck
@@ -41,11 +49,11 @@ namespace BlackjackDevProject
         }
 
         //used to shuffle the deck
-        public void Shuffle()
+        public List<Card> Shuffle(List<Card> deck)
         {
             //create a random number generator and a value to keep track of the number of cards untouched
             Random rng = new Random();
-            int i = cards.Count();
+            int i = deck.Count();
             //while there is still cards to be switched
             while (i > 1)
             {
@@ -54,11 +62,12 @@ namespace BlackjackDevProject
                 //find a random position within the deck
                 int pos = rng.Next(i + 1);
                 //save the card inside it
-                Card store = cards[pos];
+                Card store = deck[pos];
                 //swap the cards positions
-                cards[pos] = cards[i];
-                cards[i] = store;
+                deck[pos] = deck[i];
+                deck[i] = store;
             }
+            return deck;
         }
     }
 }

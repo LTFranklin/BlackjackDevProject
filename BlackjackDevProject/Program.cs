@@ -14,88 +14,123 @@ namespace BlackjackDevProject
         static Hand dealerHand = new Hand();
         static Hand doublesHand = new Hand();
         static List<Card> unknown = new Deck().GetDeck();
-        static Deck deckInPlay = new Deck();
+        static Deck deckInPlay;
+        static int wins = 0;
+        static int losses = 0;
 
         static void Main(string[] args)
         {
-            //constant loop to continously test games
-            while (true)
+            for (int j = 0; j < 25; ++j)
             {
-                Deal(playerHand);
-                Deal(dealerHand);
-                Deal(playerHand);
-                Deal(dealerHand);
-                play();
-                playerHand.Clear();
-                dealerHand.Clear();
+                deckInPlay = new Deck();
+                //constant loop to continously test games
+                for (int i = 0; i < 25; ++i)
+                {
+                    Deal(playerHand);
+                    Deal(dealerHand);
+                    Deal(playerHand);
+                    Deal(dealerHand);
+                    play();
+                    playerHand.Clear();
+                    dealerHand.Clear();
+                    doublesHand.Clear();
+                }
+                Console.WriteLine("Wins: {0}\tLosses: {1}", wins, losses);
             }
         }
 
         static bool Deal(Hand hand)
         {
-            hand.AddCard(deckInPlay.GetCard());
+            hand.AddCard(deckInPlay.GetCard()); 
             return hand.HandValueBool();
         }
 
         static void play()
         {
-            bool winBool;
-            bool continueBool = true;
+            bool doubles = false;
+            bool inPlay = true;
             //While the player wishes to/ can continue
-            while (continueBool)
+            while (inPlay)
             {
-                //print out the hand - testing
-                playerHand.PrintHand();
-               
-                continueBool = Play(playerHand);
+                bool continueBool = true;
+                while (continueBool)
+                {
+                    //print out the hand - testing
+                    playerHand.PrintHand();
+
+                    continueBool = act(playerHand);
+                }
+                //check if a hand was split
+                if(doublesHand.IsEmpty() || doubles)
+                {
+                    inPlay = false;
+                }
+                else
+                {
+                    Hand temp = playerHand;
+                    playerHand = doublesHand;
+                    doublesHand = playerHand;
+                    doubles = true;
+                }
             }
             //check if the player won
-            winBool = WinCheck(playerHand);
-            //print out the result - testing
-            if (winBool)
+            if(!doublesHand.IsEmpty())
             {
-                Console.WriteLine("You win");
+                WinCheck(doublesHand);
             }
-            else
-            {
-                Console.WriteLine("You lose");
-            }
+            WinCheck(playerHand);
 
         }
 
         //main player choice functions
-        static bool Play(Hand hand)
+        static bool act(Hand hand)
         {
             //get the players decision
-            bool choice = Decision(hand);
-            //if they choose to stand
-            if (!choice)
+            string choice = Decision(hand);
+            switch (choice)
             {
-                //do nothing and break out of the loop
-                return false;
-            }
-            //if they choose to hit
-            else
-            {
-                //use the deal method and put the result into the continue bool
-                return Deal(hand);
+                //falg the player wishes to stop
+                case ("stand"):
+                    return false;
+                //add a card to the players hand anf flag if its bust
+                case ("hit"):
+                    return Deal(hand);
+                //split the hand
+                case ("split"):
+                    splitHand();
+                    Deal(doublesHand);
+                    return Deal(hand);
+                //hit and increase the bet
+                case ("double"):
+                    //implement betting
+                    return Deal(hand);
+                //split the hand and increase the bet
+                case ("doubleSplit"):
+                    //implement betting
+                    splitHand();
+                    Deal(doublesHand);
+                    return Deal(hand);
+                default:
+                    return false;
             }
         }
-
+        
         //checks the win condition
-        static bool WinCheck(Hand hand)
+        static void WinCheck(Hand hand)
         {
             //if the player hand was bust
             if (!hand.HandValueBool())
             {
                 //print it out - testing
                 hand.PrintHand();
-                Console.WriteLine("Bust");
-                return false;
+                Console.WriteLine("Bust, hand loses\n");
+                losses++;
             }
             //else compare the hand to the dealers
             else
             {
+                //go throught the dealers options
+                dealerAction();
                 //print out the hands - testing
                 Console.WriteLine("Player:");
                 hand.PrintHand();
@@ -104,26 +139,43 @@ namespace BlackjackDevProject
                 //if the player has a higher hand value return true
                 if (hand.HandValueInt() > dealerHand.HandValueInt())
                 {
-                    return true;
+                    Console.WriteLine("Hand wins\n");
+                    wins++;
                 }
                 else
                 {
-                    return false;
+                    if (dealerHand.HandValueBool())
+                    {
+                        Console.WriteLine("Hand loses\n");
+                        losses++;
+                    }
+                    else
+                    {
+                        Console.WriteLine("Dealer bust, hand wins\n");
+                        wins++;
+                    }
                 }
             }
         }
-
-
-        static bool Decision(Hand hand)
+        
+        static string Decision(Hand hand)
         {
-            //take input - testing until player AI is implemented
-            if (Console.ReadLine() == "x")
+            Player p = new Player();
+            return p.basicStrat(hand.GetCard(0).GetVal(),hand.GetCard(1).GetVal(),hand.HandValueInt(), dealerHand.GetCard(0).GetVal());
+
+        }
+
+        static void splitHand()
+        {
+            doublesHand.AddCard(playerHand.GetCard(1));
+            playerHand.RemoveCard(1);
+        }
+
+        static void dealerAction()
+        {
+            while(dealerHand.HandValueInt() < 17)
             {
-                return true;
-            }
-            else
-            {
-                return false;
+                Deal(dealerHand);
             }
         }
     }

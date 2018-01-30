@@ -8,7 +8,7 @@ namespace BlackjackDevProject
 {
     class Hand
     {
-        List<Card> hand = new List<Card>();
+        private List<Card> hand = new List<Card>();
 
         public Hand()
         {
@@ -53,10 +53,15 @@ namespace BlackjackDevProject
             {
                 total += c.GetVal();
             }
+            //if its bust but an ace exists, -10 so the ace is valued as a 1
+            if(AceCheck() && total > 21)
+            {
+                total -= 10;
+            }
             return total;
         }
 
-        //Checks if the two cards dealt at the start are the same - only want to use this once ideally
+        //Checks if the two cards dealt at the start are the same - only want to use this once ideally (not needed?)
         public bool DoubleCheck()
         {
             //if there are more then two cards its always false
@@ -93,6 +98,18 @@ namespace BlackjackDevProject
         public void Clear()
         {
             hand.Clear();
+        }
+
+        private bool AceCheck()
+        {
+            foreach (Card c in hand)
+            {
+                if (c.GetVal() == 11)
+                {
+                    return true;
+                }
+            }
+            return false;
         }
     }
 }
