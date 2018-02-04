@@ -8,7 +8,7 @@ using System.Text.RegularExpressions;
 
 namespace BlackjackDevProject
 {
-    class Player
+    public class Player
     {
         private string[] arr = new string[350];
 
