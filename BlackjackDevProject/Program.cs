@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace BlackjackDevProject
 {
-    class Program
+    public class Program
     {
         //variables used
 
@@ -15,27 +15,38 @@ namespace BlackjackDevProject
         static Hand doublesHand = new Hand();
         static List<Card> unknown = new Deck().GetDeck();
         static Deck deckInPlay;
+        static int pot = 0;
+        static double bettingAmount = 100;
+        static int intialBet = 2;
         static int wins = 0;
         static int losses = 0;
+        static int a = 0;
+        static int b = 0;
 
         static void Main(string[] args)
         {
-            for (int j = 0; j < 25; ++j)
+            for (int j = 0; j < 10; ++j)
             {
                 deckInPlay = new Deck();
                 //constant loop to continously test games
-                for (int i = 0; i < 25; ++i)
+                for (int i = 0; i < 10; ++i)
                 {
+
+                    //deal the cards
                     Deal(playerHand);
                     Deal(dealerHand);
                     Deal(playerHand);
                     Deal(dealerHand);
-                    play();
+                    //take the bet
+                    pot += intialBet;
+                    Play();
+                    //empty the pot and clear the hands
+                    pot = 0;
                     playerHand.Clear();
                     dealerHand.Clear();
                     doublesHand.Clear();
                 }
-                Console.WriteLine("Wins: {0}\tLosses: {1}", wins, losses);
+                Console.WriteLine("Wins: {0}\tLosses: {1}\tPot: {2}", wins, losses, bettingAmount.ToString());
             }
         }
 
@@ -45,7 +56,7 @@ namespace BlackjackDevProject
             return hand.HandValueBool();
         }
 
-        static void play()
+        static void Play()
         {
             bool doubles = false;
             bool inPlay = true;
@@ -58,7 +69,7 @@ namespace BlackjackDevProject
                     //print out the hand - testing
                     playerHand.PrintHand();
 
-                    continueBool = act(playerHand);
+                    continueBool = Act(playerHand);
                 }
                 //check if a hand was split
                 if(doublesHand.IsEmpty() || doubles)
@@ -69,13 +80,14 @@ namespace BlackjackDevProject
                 {
                     Hand temp = playerHand;
                     playerHand = doublesHand;
-                    doublesHand = playerHand;
+                    doublesHand = temp;
                     doubles = true;
                 }
             }
             //check if the player won
             if(!doublesHand.IsEmpty())
             {
+                ++b;
                 WinCheck(doublesHand);
             }
             WinCheck(playerHand);
@@ -83,7 +95,7 @@ namespace BlackjackDevProject
         }
 
         //main player choice functions
-        static bool act(Hand hand)
+        static bool Act(Hand hand)
         {
             //get the players decision
             string choice = Decision(hand);
@@ -97,17 +109,17 @@ namespace BlackjackDevProject
                     return Deal(hand);
                 //split the hand
                 case ("split"):
-                    splitHand();
+                    SplitHand();
                     Deal(doublesHand);
                     return Deal(hand);
                 //hit and increase the bet
                 case ("double"):
-                    //implement betting
+                    pot += intialBet;
                     return Deal(hand);
                 //split the hand and increase the bet
                 case ("doubleSplit"):
-                    //implement betting
-                    splitHand();
+                    pot += intialBet;
+                    SplitHand();
                     Deal(doublesHand);
                     return Deal(hand);
                 default:
@@ -118,41 +130,60 @@ namespace BlackjackDevProject
         //checks the win condition
         static void WinCheck(Hand hand)
         {
-            //if the player hand was bust
+            //if the player hand was bust and they lose their bet
             if (!hand.HandValueBool())
             {
-                //print it out - testing
                 hand.PrintHand();
                 Console.WriteLine("Bust, hand loses\n");
                 losses++;
+                bettingAmount -= pot;
+                return;
             }
             //else compare the hand to the dealers
             else
             {
                 //go throught the dealers options
-                dealerAction();
+                DealerAction();
                 //print out the hands - testing
                 Console.WriteLine("Player:");
                 hand.PrintHand();
                 Console.WriteLine("Dealer");
                 dealerHand.PrintHand();
-                //if the player has a higher hand value return true
+                //if the player has a higher hand value then they win
                 if (hand.HandValueInt() > dealerHand.HandValueInt())
                 {
+                    //if they have blackjack
+                    if (hand.BlackjackCheck())
+                    {
+                        Console.WriteLine("Blackjack, Hand Wins\n");
+                        //give the 3/2 payout
+                        bettingAmount += (pot * 1.5);
+                        wins++;
+                        return;
+                    }
                     Console.WriteLine("Hand wins\n");
+                    bettingAmount += pot;
                     wins++;
+                    return;
                 }
                 else
                 {
+                    //if the dealer wins the player gets nothing back
                     if (dealerHand.HandValueBool())
                     {
                         Console.WriteLine("Hand loses\n");
                         losses++;
+                        bettingAmount -= pot;
+                        return;
                     }
+                    //if the dealer is bust and the player isnt they win
                     else
                     {
                         Console.WriteLine("Dealer bust, hand wins\n");
                         wins++;
+                        //give the player their intial bet back + the amount they get for winning
+                        bettingAmount += pot;
+                        return;
                     }
                 }
             }
@@ -165,13 +196,14 @@ namespace BlackjackDevProject
 
         }
 
-        static void splitHand()
+        static void SplitHand()
         {
             doublesHand.AddCard(playerHand.GetCard(1));
             playerHand.RemoveCard(1);
+            ++a;
         }
 
-        static void dealerAction()
+        static void DealerAction()
         {
             while(dealerHand.HandValueInt() < 17)
             {

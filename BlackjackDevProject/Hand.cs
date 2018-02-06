@@ -61,6 +61,17 @@ namespace BlackjackDevProject
             return total;
         }
 
+        //return if the hand has a blackjack
+        public bool BlackjackCheck()
+        {
+            //if either of the cards is a 1 and the other a picture card return true
+            if ((hand[0].GetTrueValue() == 1 && hand[1].GetTrueValue() > 10) || (hand[1].GetTrueValue() == 1 && hand[0].GetTrueValue() > 10))
+            {
+                return true;
+            }
+            return false;
+        }
+
         //Checks if the two cards dealt at the start are the same - only want to use this once ideally (not needed?)
         public bool DoubleCheck()
         {
