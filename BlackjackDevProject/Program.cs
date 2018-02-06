@@ -20,8 +20,7 @@ namespace BlackjackDevProject
         static int intialBet = 2;
         static int wins = 0;
         static int losses = 0;
-        static int a = 0;
-        static int b = 0;
+
 
         static void Main(string[] args)
         {
@@ -87,7 +86,6 @@ namespace BlackjackDevProject
             //check if the player won
             if(!doublesHand.IsEmpty())
             {
-                ++b;
                 WinCheck(doublesHand);
             }
             WinCheck(playerHand);
@@ -166,25 +164,28 @@ namespace BlackjackDevProject
                     wins++;
                     return;
                 }
+                //if its a draw the bet is returned
+                if(hand.HandValueInt() == dealerHand.HandValueInt())
+                {
+                    Console.WriteLine("Draw, bet returned\n");
+                    return;
+                }
+                //if the dealer wins the player gets nothing back
+                if (dealerHand.HandValueBool())
+                {
+                    Console.WriteLine("Hand loses\n");
+                    losses++;
+                    bettingAmount -= pot;
+                    return;
+                }
+                //if the dealer is bust and the player isnt they win
                 else
                 {
-                    //if the dealer wins the player gets nothing back
-                    if (dealerHand.HandValueBool())
-                    {
-                        Console.WriteLine("Hand loses\n");
-                        losses++;
-                        bettingAmount -= pot;
-                        return;
-                    }
-                    //if the dealer is bust and the player isnt they win
-                    else
-                    {
-                        Console.WriteLine("Dealer bust, hand wins\n");
-                        wins++;
-                        //give the player their intial bet back + the amount they get for winning
-                        bettingAmount += pot;
-                        return;
-                    }
+                    Console.WriteLine("Dealer bust, hand wins\n");
+                    wins++;
+                    //give the player their intial bet back + the amount they get for winning
+                    bettingAmount += pot;
+                    return;
                 }
             }
         }
@@ -200,7 +201,6 @@ namespace BlackjackDevProject
         {
             doublesHand.AddCard(playerHand.GetCard(1));
             playerHand.RemoveCard(1);
-            ++a;
         }
 
         static void DealerAction()
