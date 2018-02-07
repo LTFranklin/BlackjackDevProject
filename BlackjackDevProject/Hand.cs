@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace BlackjackDevProject
 {
-    class Hand
+    public class Hand
     {
         private List<Card> hand = new List<Card>();
 
@@ -49,14 +49,18 @@ namespace BlackjackDevProject
         public int HandValueInt()
         {
             int total = 0;
+            int i = 0;
             foreach (Card c in hand)
             {
                 total += c.GetVal();
             }
             //if its bust but an ace exists, -10 so the ace is valued as a 1
-            if(AceCheck() && total > 21)
+            while(total > 21)
             {
-                total -= 10;
+                if (hand[i].GetVal() == 11)
+                {
+                    total -= 10;
+                }
             }
             return total;
         }
