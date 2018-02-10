@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace BlackjackDevProject
 {
     //Class used to create all the cards
-    class Card
+    public class Card
     {
         //Stores the cards value and suit. A,J,Q,K are represented by their numerical equivalents
         private int value;
