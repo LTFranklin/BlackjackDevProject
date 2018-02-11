@@ -10,6 +10,8 @@ namespace BlackjackDevProject
     {
         //List of all the cards
         private List<Card> cards = new List<Card>();
+        //deck index value
+        private int indexVal = 0;
 
         //Custom contructor
         public Deck()
@@ -68,6 +70,21 @@ namespace BlackjackDevProject
                 deck[i] = store;
             }
             return deck;
+        }
+
+        public void EditIndexVal(Card c)
+        {
+            int i = c.GetVal();
+            if(i > 9)
+            {
+                ++indexVal;
+                return;
+            }
+            if(i < 7)
+            {
+                --indexVal;
+                return;
+            }
         }
     }
 }

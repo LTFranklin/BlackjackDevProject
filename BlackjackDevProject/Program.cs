@@ -30,10 +30,10 @@ namespace BlackjackDevProject
                 for (int i = 0; i < 10; ++i)
                 {
                     //deal the cards
-                    Deal(playerHand);
-                    Deal(dealerHand);
-                    Deal(playerHand);
-                    Deal(dealerHand);
+                    DealKnown(playerHand);
+                    DealKnown(dealerHand);
+                    DealKnown(playerHand);
+                    DealUnknown(dealerHand);
                     //take the bet
                     pot += intialBet;
                     Play(playerHand, doublesHand, dealerHand);
@@ -47,9 +47,24 @@ namespace BlackjackDevProject
             }
         }
 
-        static bool Deal(Hand hand)
+        //used for face up cards
+        static bool DealKnown (Hand hand)
         {
-            hand.AddCard(deckInPlay.GetCard()); 
+            Console.WriteLine("dealing");
+            Card c = deckInPlay.GetCard();
+            hand.AddCard(c);
+            //changes the index value
+            deckInPlay.EditIndexVal(c);
+            hand.PrintHand();
+            bool b = hand.HandValueBool();
+            Console.WriteLine("dealing");
+            return b;
+        }
+
+        //used for the dealers intial face down card
+        static bool DealUnknown(Hand hand)
+        {
+            hand.AddCard(deckInPlay.GetCard());
             return hand.HandValueBool();
         }
 
@@ -83,11 +98,12 @@ namespace BlackjackDevProject
                 }
             }
             //check if the player won
-            if(!doublesHand.IsEmpty())
+            if (!doublesHand.IsEmpty())
             {
                 WinCheck(doublesHand, dealerHand);
             }
-            return WinCheck(playerHand, dealerHand);
+            bool b = WinCheck(playerHand, dealerHand);
+            return b;
 
         }
 
@@ -103,22 +119,22 @@ namespace BlackjackDevProject
                     return false;
                 //add a card to the players hand anf flag if its bust
                 case ("hit"):
-                    return Deal(playerHand);
+                    return DealKnown(playerHand);
                 //split the hand
                 case ("split"):
                     SplitHand(playerHand, doublesHand);
-                    Deal(doublesHand);
-                    return Deal(playerHand);
+                    DealKnown(doublesHand);
+                    return DealKnown(playerHand);
                 //hit and increase the bet
                 case ("double"):
                     pot += intialBet;
-                    return Deal(playerHand);
+                    return DealKnown(playerHand);
                 //split the hand and increase the bet
                 case ("doubleSplit"):
                     pot += intialBet;
                     SplitHand(playerHand, doublesHand);
-                    Deal(doublesHand);
-                    return Deal(playerHand);
+                    DealKnown(doublesHand);
+                    return DealKnown(playerHand);
                 default:
                     return false;
             }
@@ -204,10 +220,14 @@ namespace BlackjackDevProject
 
         static void DealerAction(Hand dealerHand)
         {
+            Console.WriteLine("dealerACtion");
+            dealerHand.PrintHand();
             while(dealerHand.HandValueInt() < 17)
             {
-                Deal(dealerHand);
+                DealKnown(dealerHand);
             }
+            Console.WriteLine("dealerACtion");
+            return;
         }
     }
 }

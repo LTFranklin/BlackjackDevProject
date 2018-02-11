@@ -55,11 +55,18 @@ namespace BlackjackDevProject
                 total += c.GetVal();
             }
             //if its bust but an ace exists, -10 so the ace is valued as a 1
-            while(total > 21)
+            if(total > 21)
             {
-                if (hand[i].GetVal() == 11)
+                foreach (Card c in hand)
                 {
-                    total -= 10;
+                    if(c.GetVal() == 11)
+                    {
+                        total -= 10;
+                    }
+                    if(total < 21)
+                    {
+                        break;
+                    }
                 }
             }
             return total;
