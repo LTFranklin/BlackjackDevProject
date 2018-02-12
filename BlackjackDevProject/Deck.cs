@@ -86,5 +86,10 @@ namespace BlackjackDevProject
                 return;
             }
         }
+
+        public int GetIndexValue()
+        {
+            return indexVal;
+        }
     }
 }

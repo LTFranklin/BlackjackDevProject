@@ -49,7 +49,6 @@ namespace BlackjackDevProject
         public int HandValueInt()
         {
             int total = 0;
-            int i = 0;
             foreach (Card c in hand)
             {
                 total += c.GetVal();

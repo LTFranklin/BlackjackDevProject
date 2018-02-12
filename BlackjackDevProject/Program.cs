@@ -50,14 +50,11 @@ namespace BlackjackDevProject
         //used for face up cards
         static bool DealKnown (Hand hand)
         {
-            Console.WriteLine("dealing");
             Card c = deckInPlay.GetCard();
             hand.AddCard(c);
             //changes the index value
             deckInPlay.EditIndexVal(c);
-            hand.PrintHand();
             bool b = hand.HandValueBool();
-            Console.WriteLine("dealing");
             return b;
         }
 
@@ -207,7 +204,7 @@ namespace BlackjackDevProject
         
         static string Decision(Hand hand, Hand dealerHand)
         {
-            Player p = new Player();
+            Player p = new Player(deckInPlay.GetIndexValue());
             return p.basicStrat(hand.GetCard(0).GetVal(),hand.GetCard(1).GetVal(),hand.HandValueInt(), dealerHand.GetCard(0).GetVal());
 
         }
@@ -220,13 +217,10 @@ namespace BlackjackDevProject
 
         static void DealerAction(Hand dealerHand)
         {
-            Console.WriteLine("dealerACtion");
-            dealerHand.PrintHand();
             while(dealerHand.HandValueInt() < 17)
             {
                 DealKnown(dealerHand);
             }
-            Console.WriteLine("dealerACtion");
             return;
         }
     }
