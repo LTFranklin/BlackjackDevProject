@@ -33,7 +33,7 @@ namespace BlackjackDevProject
         }
 
         //basic strategy ai
-        public string basicStrat(int card1, int card2, int handVal, int dVal)
+        public string BasicStrat(int card1, int card2, int handVal, int dVal)
         {
             string doubles = "([1-9][01]?),([1-9][01]?)/([0-9][0-9]?)/([0-9][0-9]?)/([a-zA-Z]+)/?([a-z]+)?/?([+-][0-5])?";
             string soft = "-,A/([0-9][0-9]?)/([0-9][0-9]?)/([a-zA-Z]+)/?([a-z]+)?/?([+-][0-5])";
@@ -88,13 +88,13 @@ namespace BlackjackDevProject
         }
 
         //odds ai -> tries to get as high as possible -> needs list of known cards
-        public string odds(int card1, int card2)
+        public string Odds(int card1, int card2)
         {
             return "";
         }
 
         //ai that tries to get over a certain value (17)
-        public string valueBased(int val)
+        public string ValueBased(int val)
         {
             if(val > 17)
             {
@@ -107,7 +107,7 @@ namespace BlackjackDevProject
         }
 
         //random ai
-        public string random()
+        public string Random()
         {
             Random rnd = new Random();
             if(rnd.Next(0,2) == 0)

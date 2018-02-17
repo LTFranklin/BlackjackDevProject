@@ -21,7 +21,7 @@ namespace UnitTestProject1
                     //for every dealer card
                     for (int k = 2; k < 12; k++)
                     {
-                        Assert.AreEqual(Strat(i, j, i + j, k), p.basicStrat(i, j, i + j, k));
+                        Assert.AreEqual(Strat(i, j, i + j, k), p.BasicStrat(i, j, i + j, k));
                     }
                 }
             }

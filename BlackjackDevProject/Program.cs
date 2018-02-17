@@ -45,6 +45,7 @@ namespace BlackjackDevProject
                 }
                 Console.WriteLine("Wins: {0}\tLosses: {1}\tPot: {2}", wins, losses, bettingAmount.ToString());
             }
+            Console.ReadLine();
         }
 
         //used for face up cards
@@ -205,7 +206,7 @@ namespace BlackjackDevProject
         static string Decision(Hand hand, Hand dealerHand)
         {
             Player p = new Player(deckInPlay.GetIndexValue());
-            return p.basicStrat(hand.GetCard(0).GetVal(),hand.GetCard(1).GetVal(),hand.HandValueInt(), dealerHand.GetCard(0).GetVal());
+            return p.BasicStrat(hand.GetCard(0).GetVal(),hand.GetCard(1).GetVal(),hand.HandValueInt(), dealerHand.GetCard(0).GetVal());
 
         }
 
