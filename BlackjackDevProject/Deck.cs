@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace BlackjackDevProject
 {
-    class Deck
+    public class Deck
     {
         //List of all the cards
         private List<Card> cards = new List<Card>();
