@@ -62,7 +62,7 @@ namespace BlackjackDevProject
                 //decrement
                 --i;
                 //find a random position within the deck
-                int pos = rng.Next(i + 1);
+                int pos = rng.Next(i + 1); 
                 //save the card inside it
                 Card store = deck[pos];
                 //swap the cards positions

@@ -16,9 +16,6 @@ namespace BlackjackDevProject
         static void Main(string[] args)
         {
             GameFeatures gameState = new GameFeatures();
-            Hand playerHand = new Hand();
-            Hand dealerHand = new Hand();
-            Hand doublesHand = new Hand();
 
             for (int j = 0; j < 10; ++j)
             {
@@ -27,18 +24,18 @@ namespace BlackjackDevProject
                 for (int i = 0; i < 10; ++i)
                 {
                     //deal the cards
-                    DealKnown(playerHand, gameState);
-                    DealKnown(dealerHand, gameState);
-                    DealKnown(playerHand, gameState);
-                    DealUnknown(dealerHand, gameState);
+                    DealKnown(gameState.GetHand("player"), gameState);
+                    DealKnown(gameState.GetHand("dealer"), gameState);
+                    DealKnown(gameState.GetHand("player"), gameState);
+                    DealUnknown(gameState.GetHand("dealer"), gameState);
                     //take the bet
                     gameState.IncrementPot();
-                    Play(playerHand, doublesHand, dealerHand, gameState);
+                    Play(gameState);
                     //empty the pot and clear the hands
                     gameState.SetPot(0);
-                    playerHand.Clear();
-                    dealerHand.Clear();
-                    doublesHand.Clear();
+                    gameState.GetHand("player").Clear();
+                    gameState.GetHand("dealer").Clear();
+                    gameState.GetHand("doubles").Clear();
                 }
                 Console.WriteLine("Wins: {0}\tLosses: {1}\tPot: {2}", wins, losses, gameState.GetBettingAmount().ToString());
             }
@@ -64,7 +61,7 @@ namespace BlackjackDevProject
         }
 
         //some functions return values for testing
-        static bool Play(Hand playerHand, Hand doublesHand, Hand dealerHand, GameFeatures gameState)
+        static bool Play(GameFeatures gameState)
         {
             bool doubles = false;
             bool inPlay = true;
@@ -75,38 +72,38 @@ namespace BlackjackDevProject
                 while (continueBool)
                 {
                     //print out the hand - testing
-                    playerHand.PrintHand();
+                    gameState.GetHand("player").PrintHand();
 
-                    continueBool = Act(playerHand, doublesHand, dealerHand, gameState);
+                    continueBool = Act(gameState);
                 }
                 //check if a hand was split
-                if(doublesHand.IsEmpty() || doubles)
+                if(gameState.GetHand("doubles").IsEmpty() || doubles)
                 {
                     inPlay = false;
                 }
                 else
                 {
-                    Hand temp = playerHand;
-                    playerHand = doublesHand;
-                    doublesHand = temp;
+                    Hand temp = gameState.GetHand("player");
+                    gameState.SetHand("player", gameState.GetHand("doubles"));
+                    gameState.SetHand("doubles", temp);
                     doubles = true;
                 }
             }
             //check if the player won
-            if (!doublesHand.IsEmpty())
+            if (!gameState.GetHand("doubles").IsEmpty())
             {
-                WinCheck(doublesHand, dealerHand, gameState);
+                WinCheck(gameState.GetHand("doubles"), gameState.GetHand("dealer"), gameState);
             }
-            bool b = WinCheck(playerHand, dealerHand, gameState);
+            bool b = WinCheck(gameState.GetHand("player"), gameState.GetHand("dealer"), gameState);
             return b;
 
         }
 
         //main player choice functions
-        static bool Act(Hand playerHand, Hand doublesHand, Hand dealerHand, GameFeatures gameState)
+        static bool Act(GameFeatures gameState)
         {
             //get the players decision
-            string choice = Decision(playerHand, dealerHand, gameState);
+            string choice = Decision(gameState.GetHand("player"), gameState.GetHand("dealer"), gameState);
             switch (choice)
             {
                 //falg the player wishes to stop
@@ -114,22 +111,22 @@ namespace BlackjackDevProject
                     return false;
                 //add a card to the players hand anf flag if its bust
                 case ("hit"):
-                    return DealKnown(playerHand, gameState);
+                    return DealKnown(gameState.GetHand("player"), gameState);
                 //split the hand
                 case ("split"):
-                    SplitHand(playerHand, doublesHand);
-                    DealKnown(doublesHand, gameState);
-                    return DealKnown(playerHand, gameState);
+                    SplitHand(gameState.GetHand("player"), gameState.GetHand("doubles"));
+                    DealKnown(gameState.GetHand("doubles"), gameState);
+                    return DealKnown(gameState.GetHand("player"), gameState);
                 //hit and increase the bet
                 case ("double"):
                     gameState.IncrementPot();
-                    return DealKnown(playerHand, gameState);
+                    return DealKnown(gameState.GetHand("player"), gameState);
                 //split the hand and increase the bet
                 case ("doubleSplit"):
                     gameState.IncrementPot();
-                    SplitHand(playerHand, doublesHand);
-                    DealKnown(doublesHand, gameState);
-                    return DealKnown(playerHand, gameState);
+                    SplitHand(gameState.GetHand("player"), gameState.GetHand("doubles"));
+                    DealKnown(gameState.GetHand("doubles"), gameState);
+                    return DealKnown(gameState.GetHand("player"), gameState);
                 default:
                     return false;
             }

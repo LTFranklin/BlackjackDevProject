@@ -73,6 +73,22 @@ namespace BlackjackDevProject
             return deckInPlay;
         }
 
+        public void SetHand(string setType, Hand inHand)
+        {
+            if (setType == "player")
+            {
+                playerHand = inHand;
+            }
+            if (setType == "dealer")
+            {
+                dealerHand = inHand;
+            }
+            else
+            {
+                doublesHand = inHand;
+            }
+        }
+
         public Hand GetHand(string type)
         {
             if (type == "player")
