@@ -1,5 +1,5 @@
-2,2/4/2/doubleSplit
-2,2/4/3/doubleSplit
+2,2/4/2/doublesplit
+2,2/4/3/doublesplit
 2,2/4/4/split
 2,2/4/5/split
 2,2/4/6/split
@@ -8,8 +8,8 @@
 2,2/4/9/hit
 2,2/4/10/hit
 2,2/4/11/hit
-3,3/6/2/doubleSplit
-3,3/6/3/doubleSplit
+3,3/6/2/doublesplit
+3,3/6/3/doublesplit
 3,3/6/4/split
 3,3/6/5/split
 3,3/6/6/split
@@ -21,8 +21,8 @@
 4,4/8/2/hit
 4,4/8/3/hit
 4,4/8/4/hit
-4,4/8/5/doubleSplit
-4,4/8/6/doubleSplit
+4,4/8/5/doublesplit
+4,4/8/6/doublesplit
 4,4/8/7/hit
 4,4/8/8/hit
 4,4/8/9/hit
@@ -38,7 +38,7 @@
 5,5/10/9/double
 5,5/10/10/hit
 5,5/10/11/hit
-6,6/12/2/doubleSplit
+6,6/12/2/doublesplit
 6,6/12/3/split
 6,6/12/4/split
 6,6/12/5/split

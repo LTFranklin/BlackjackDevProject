@@ -24,6 +24,7 @@ namespace UnitTestProject1
         public void StandardWins()
         {
             Hand dealerHand = BuildHand();
+            GameFeatures state = new GameFeatures();
 
             //test a standard winnning hand
             Hand playerHand = new Hand();
@@ -31,7 +32,7 @@ namespace UnitTestProject1
             playerHand.AddCard(c);
             c = new Card(8, 0);
             playerHand.AddCard(c);
-            Assert.AreEqual(true, Program.WinCheck(playerHand, dealerHand));
+            Assert.AreEqual(true, Program.WinCheck(playerHand, dealerHand, state));
             playerHand.Clear();
 
             //test a picture winning hand
@@ -39,7 +40,7 @@ namespace UnitTestProject1
             playerHand.AddCard(c);
             c = new Card(8, 0);
             playerHand.AddCard(c);
-            Assert.AreEqual(true, Program.WinCheck(playerHand, dealerHand));
+            Assert.AreEqual(true, Program.WinCheck(playerHand, dealerHand, state));
             playerHand.Clear();
 
             //test a high card count winning hand
@@ -59,7 +60,7 @@ namespace UnitTestProject1
             playerHand.AddCard(c);
             c = new Card(3, 3);
             playerHand.AddCard(c);
-            Assert.AreEqual(true, Program.WinCheck(playerHand, dealerHand));
+            Assert.AreEqual(true, Program.WinCheck(playerHand, dealerHand, state));
             playerHand.Clear();
         }
 
@@ -67,6 +68,7 @@ namespace UnitTestProject1
         public void StandardLosses()
         {
             Hand dealerHand = BuildHand();
+            GameFeatures state = new GameFeatures();
 
             //test a standard losing hand
             Hand playerHand = new Hand();
@@ -74,7 +76,7 @@ namespace UnitTestProject1
             playerHand.AddCard(c);
             c = new Card(3, 0);
             playerHand.AddCard(c);
-            Assert.AreEqual(false, Program.WinCheck(playerHand, dealerHand));
+            Assert.AreEqual(false, Program.WinCheck(playerHand, dealerHand, state));
             playerHand.Clear();
 
             //test a picture losing hand
@@ -82,7 +84,7 @@ namespace UnitTestProject1
             playerHand.AddCard(c);
             c = new Card(5, 0);
             playerHand.AddCard(c);
-            Assert.AreEqual(false, Program.WinCheck(playerHand, dealerHand));
+            Assert.AreEqual(false, Program.WinCheck(playerHand, dealerHand, state));
             playerHand.Clear();
 
             //test a high card count losing hand
@@ -98,7 +100,7 @@ namespace UnitTestProject1
             playerHand.AddCard(c);
             c = new Card(3, 3);
             playerHand.AddCard(c);
-            Assert.AreEqual(false, Program.WinCheck(playerHand, dealerHand));
+            Assert.AreEqual(false, Program.WinCheck(playerHand, dealerHand, state));
             playerHand.Clear();
         }
 
@@ -106,6 +108,7 @@ namespace UnitTestProject1
         public void AceHands()
         {
             Hand dealerHand = BuildHand();
+            GameFeatures state = new GameFeatures();
 
             //test a winnning hand
             Hand playerHand = new Hand();
@@ -113,7 +116,7 @@ namespace UnitTestProject1
             playerHand.AddCard(c);
             c = new Card(8, 0);
             playerHand.AddCard(c);
-            Assert.AreEqual(true, Program.WinCheck(playerHand, dealerHand));
+            Assert.AreEqual(true, Program.WinCheck(playerHand, dealerHand, state));
             playerHand.Clear();
 
             //test a picture winning hand
@@ -121,7 +124,7 @@ namespace UnitTestProject1
             playerHand.AddCard(c);
             c = new Card(1, 0);
             playerHand.AddCard(c);
-            Assert.AreEqual(true, Program.WinCheck(playerHand, dealerHand));
+            Assert.AreEqual(true, Program.WinCheck(playerHand, dealerHand, state));
             playerHand.Clear();
 
             //test a high card count winning hand -> fails
@@ -147,7 +150,7 @@ namespace UnitTestProject1
             playerHand.AddCard(c);
             c = new Card(3, 2);
             playerHand.AddCard(c);
-            Assert.AreEqual(true, Program.WinCheck(playerHand, dealerHand));
+            Assert.AreEqual(true, Program.WinCheck(playerHand, dealerHand, state));
             playerHand.Clear();
         }
 

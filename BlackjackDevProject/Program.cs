@@ -11,13 +11,17 @@ namespace BlackjackDevProject
         //variables used for win tracking
         static int wins = 0;
         static int losses = 0;
+        static double accuracy = 0;
+        static double decisions = 0;
+        static int hands = 0;
+        static bool userInput = false;
 
 
         static void Main(string[] args)
         {
             GameFeatures gameState = new GameFeatures();
 
-            for (int j = 0; j < 10; ++j)
+            for (int j = 0; j < 10000; ++j)
             {
                 gameState.SetDeck(new Deck());
                 //constant loop to continously test games
@@ -36,9 +40,12 @@ namespace BlackjackDevProject
                     gameState.GetHand("player").Clear();
                     gameState.GetHand("dealer").Clear();
                     gameState.GetHand("doubles").Clear();
+                    ++hands;
                 }
-                Console.WriteLine("Wins: {0}\tLosses: {1}\tPot: {2}", wins, losses, gameState.GetBettingAmount().ToString());
+                double d = accuracy / decisions;
+                Console.WriteLine("Wins: {0}\tLosses: {1}\tPot: {2}\tAccuracy: {3}", wins, losses, gameState.GetBettingAmount().ToString(), d.ToString());
             }
+            
             Console.ReadLine();
         }
 
@@ -50,6 +57,10 @@ namespace BlackjackDevProject
             //changes the index value
             gameState.GetDeck().EditIndexVal(c);
             bool b = hand.HandValueBool();
+            if(!b)
+            {
+                Console.WriteLine("Hand Bust\n");
+            }
             return b;
         }
 
@@ -72,8 +83,11 @@ namespace BlackjackDevProject
                 while (continueBool)
                 {
                     //print out the hand - testing
-                    gameState.GetHand("player").PrintHand();
 
+                    ;
+                    Console.Write("Player: ");
+                    gameState.GetHand("player").PrintHand();
+                    Console.WriteLine("Dealer: " + gameState.GetHand("dealer").GetCard(0).ToString() + "\n");
                     continueBool = Act(gameState);
                 }
                 //check if a hand was split
@@ -102,33 +116,62 @@ namespace BlackjackDevProject
         //main player choice functions
         static bool Act(GameFeatures gameState)
         {
+            ++decisions;
             //get the players decision
-            string choice = Decision(gameState.GetHand("player"), gameState.GetHand("dealer"), gameState);
-            switch (choice)
+            string choice;
+            //bool changes the gmae from manual to auto input
+            while (true)
             {
-                //falg the player wishes to stop
-                case ("stand"):
-                    return false;
-                //add a card to the players hand anf flag if its bust
-                case ("hit"):
-                    return DealKnown(gameState.GetHand("player"), gameState);
-                //split the hand
-                case ("split"):
-                    SplitHand(gameState.GetHand("player"), gameState.GetHand("doubles"));
-                    DealKnown(gameState.GetHand("doubles"), gameState);
-                    return DealKnown(gameState.GetHand("player"), gameState);
-                //hit and increase the bet
-                case ("double"):
-                    gameState.IncrementPot();
-                    return DealKnown(gameState.GetHand("player"), gameState);
-                //split the hand and increase the bet
-                case ("doubleSplit"):
-                    gameState.IncrementPot();
-                    SplitHand(gameState.GetHand("player"), gameState.GetHand("doubles"));
-                    DealKnown(gameState.GetHand("doubles"), gameState);
-                    return DealKnown(gameState.GetHand("player"), gameState);
-                default:
-                    return false;
+                if (userInput)
+                {
+                    Console.WriteLine("What would you like to do?\n");
+                    choice = Console.ReadLine();
+                    //checks if the user input matches the AIs
+                    if (Compare(gameState.GetHand("player"), gameState.GetHand("dealer"), gameState, choice))
+                    {
+                        ++accuracy;
+                    }
+                }
+                else
+                {
+                    choice = Decision(gameState.GetHand("player"), gameState.GetHand("dealer"), gameState);
+                }
+                switch (choice)
+                {
+                    //falg the player wishes to stop
+                    case ("stand"):
+                        return false;
+                    //add a card to the players hand anf flag if its bust
+                    case ("hit"):
+                        return DealKnown(gameState.GetHand("player"), gameState);
+                    //split the hand
+                    case ("split"):
+                        if (gameState.GetHand("player").GetCardCount() > 2 || (gameState.GetHand("player").GetCard(0).GetVal() != gameState.GetHand("player").GetCard(1).GetVal()))
+                        {
+                            Console.WriteLine("Splitting is not allowed\n");
+                            break;
+                        }
+                        SplitHand(gameState.GetHand("player"), gameState.GetHand("doubles"));
+                        DealKnown(gameState.GetHand("doubles"), gameState);
+                        return DealKnown(gameState.GetHand("player"), gameState);
+                    //hit and increase the bet
+                    case ("double"):
+                        gameState.IncrementPot();
+                        return DealKnown(gameState.GetHand("player"), gameState);
+                    //split the hand and increase the bet
+                    case ("doublesplit"):
+                        if (gameState.GetHand("player").GetCardCount() > 2 || (gameState.GetHand("player").GetCard(0).GetVal() != gameState.GetHand("player").GetCard(1).GetVal()))
+                        {
+                            Console.WriteLine("Splitting is not allowed\n");
+                            break;
+                        }
+                        gameState.IncrementPot();
+                        SplitHand(gameState.GetHand("player"), gameState.GetHand("doubles"));
+                        DealKnown(gameState.GetHand("doubles"), gameState);
+                        return DealKnown(gameState.GetHand("player"), gameState);
+                    default:
+                        return false;
+                }
             }
         }
         
@@ -200,7 +243,7 @@ namespace BlackjackDevProject
         static string Decision(Hand hand, Hand dealerHand, GameFeatures gameState)
         {
             Player p = new Player(gameState.GetDeck().GetIndexValue());
-            return p.BasicStrat(hand.GetCard(0).GetVal(),hand.GetCard(1).GetVal(),hand.HandValueInt(), dealerHand.GetCard(0).GetVal());
+            return p.BasicStrat(hand.GetCard(0).GetVal(),hand.GetCard(1).GetVal(),hand.HandValueInt(), dealerHand.GetCard(0).GetVal(), true);
 
         }
 
@@ -217,6 +260,15 @@ namespace BlackjackDevProject
                 DealKnown(dealerHand, gameState);
             }
             return;
+        }
+
+        static bool Compare(Hand hand, Hand dealerHand, GameFeatures gameState, string input)
+        {
+            if (Decision(gameState.GetHand("player"), gameState.GetHand("dealer"), gameState) == input)
+            {
+                return true;
+            }
+            return false;
         }
     }
 }

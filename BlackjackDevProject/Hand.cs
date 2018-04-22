@@ -99,6 +99,11 @@ namespace BlackjackDevProject
             return hand[i];
         }
 
+        public int GetCardCount()
+        {
+            return hand.Count();
+        }
+
         //Removes a card in the hand -> used for doubles
         public void RemoveCard(int i)
         {
